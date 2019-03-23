@@ -21,15 +21,16 @@ def TransformAxisValue(Value):
     return Value
 
 def check_button(output):
-    if output[2] == 1:
+    if output == 0:
         button = button0
-    if output[3] == 1:
+        return button
+    if output == 1:
         button = button6
-    if output[4] == 1:
+        return button
+    if output == 2:
         button = button7
-    if output[2] == 0 and output[3] == 0 and output[4] == 0:
-        button = 0
-    return button
+        return button
+
 j = pyvjoy.VJoyDevice(1)
 
 #with tf.device('cpu:0'):
@@ -56,14 +57,15 @@ while(True):
     output = [
             int(TransformAxisValue(joystick[0])),
             int(TransformAxisValue(joystick[1])),
-            int(round(joystick[2])),
-            int(round(joystick[3])),
-            int(round(joystick[4])),
+            joystick[2],
+            joystick[3],
+            joystick[4],
         ]
     print(output)
     id += 1
-    button = check_button(output)
-    j.data.lButtons = button7
+    button = check_button(np.argmax(joystick[-3:]))
+    print(button)
+    j.data.lButtons = button
     j.data.wAxisX = output[0]
     j.data.wAxisY= output[1]
     #j.data.wSlider = int(TransformAxisValue(-0.8))
