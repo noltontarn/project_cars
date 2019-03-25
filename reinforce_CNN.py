@@ -65,6 +65,7 @@ terrain =	{
   "34" : "TERRAIN_SNOWFULL"
 }
 
+
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 session = tf.Session(config=config)
@@ -210,17 +211,18 @@ def brakeFullR():
 
 moves = 21
 learningRate = 0.9
-f = open('store.pckl', 'rb')
-epsilon = pickle.load(f)
-f.close()
+epsilon = 0.1
+#f = open('store.pckl', 'rb')
+#epsilon = pickle.load(f)
+#f.close()
 epsilon_min = 0.01
-epsilon_decay = 0.995
+epsilon_decay = 0.90
 episodes = 100
-#memory = []
-f = open('mem.pckl', 'rb')
-memory = pickle.load(f)
-f.close()
-max_memory = 5000
+memory = []
+#f = open('mem.pckl', 'rb')
+#memory = pickle.load(f)
+#f.close()
+max_memory = 1000
 
 def customized_loss(y_true, y_pred, loss='euclidean'):
     # Simply a mean squared error that penalizes large joystick summed values
@@ -278,6 +280,7 @@ for i in range(episodes):
     crashState = 0
     preDistance = 0
     while crashState == 0:
+        reward = 0
         if np.random.rand() <= epsilon:
             action = np.random.randint(0, moves, size=1)[0]
             print("random")
@@ -371,6 +374,10 @@ for i in range(episodes):
             reward -= 0.2
         crashState = game.mCrashState
 
+        if crashState != 0:
+            reward -= 100
+
+        print("reward" + str(reward))
         if len(memory) >= max_memory:
             del memory[0]
         
@@ -383,9 +390,9 @@ for i in range(episodes):
             j.data.wAxisX = 16384
             j.update()
             print("end episode: reward = " + str(reward))
-    
-    if len(memory) > 512:
-        batch_size = 512
+
+    if len(memory) > 128:
+        batch_size = 128
     else:
         batch_size = len(memory)
     

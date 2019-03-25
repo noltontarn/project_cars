@@ -61,7 +61,7 @@ Button7 = 0
 start_time = time.time()
 previous_time = start_time
 sct = mss.mss()
-f = open('input_monza3.txt', 'w')
+f = open('input_fixbug.txt', 'w')
 id = 1
 # -------- Main Program Loop -----------
 while done==False:
@@ -153,7 +153,7 @@ while done==False:
     #if time.time() - previous_time >= (1/66):
         #previous_time = time.time()
     if start == True:
-        name = "./input_monza3/" + str(id) + ".png"
+        name = "./input_fixbug/" + str(id) + ".png"
         if ButtonPress == 0:
             Button0 = 1
         if ButtonPress == 6:

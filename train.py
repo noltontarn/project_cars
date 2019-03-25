@@ -50,21 +50,21 @@ def create_model(keep_prob = 0.8):
     return model
 if __name__ == '__main__':
     # Load Training Data
-    x_train = np.load("data/X_m3.npy")
-    y_train = np.load("data/y_m3.npy")
+    x_train = np.load("data/X_fix.npy")
+    y_train = np.load("data/y_fix.npy")
 
     print(x_train.shape[0], 'train samples')
 
     # Training loop variables
-    epochs = 100
+    epochs = 1
     batch_size = 50
 
     model = create_model()
-    model.load_weights('model_weights.h5')
+    model.load_weights('CNN+reinforce_weights.h5')
     print(model.get_weights())
     print("weights loaded")
     model.compile(loss=customized_loss, optimizer=optimizers.adam())
-    model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, shuffle=True, validation_split=0.05)
+    model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, shuffle=True, validation_split=0)
 
     model.get_weights()
-    model.save_weights('model_weights.h5')
+    model.save_weights('CNN+reinforce+fix_weights.h5')

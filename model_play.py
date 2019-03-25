@@ -6,6 +6,9 @@ import os
 import numpy as np
 import pyvjoy
 import tensorflow as tf
+import pypcars2api
+
+game = pypcars2api.live()
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
@@ -15,29 +18,74 @@ button0 = 1
 button6 = 64
 button7 = 128
 
+
 def TransformAxisValue(Value):
     Value *= 16384
     Value += 16384
     return Value
 
-def check_button(output):
+def check_button(output, x):
+    speed = round(game.mSpeed, 1)
     if output == 0:
         button = button0
         return button
     if output == 1:
-        button = button6
+        if speed < 26.8:
+            button = 0
+        else:
+            button = button6
         return button
     if output == 2:
-        button = button7
+        if speed > 20.12 and (x < 11500 or x > 19000):
+            button = button6
+        elif speed > 30.85:
+            button = 0
+        else:
+            button = button7
         return button
 
+def check_x(x, Lfirst, Rfirst):
+    FL = game.mTerrain[0]
+    FR = game.mTerrain[1]
+    RL = game.mTerrain[2]
+    RR = game.mTerrain[3]
+    if FL != 0:
+        if Rfirst == False:
+            Lfirst = True
+            print("too much left")
+            x += 2000
+            if FR != 0:
+                if x < 20000:
+                    x = 21000
+                else:
+                    x +=4000
+    if FR != 0:
+        if Lfirst == False:
+            Rfirst = True 
+            print("too much right")
+            x -= 2000
+            if FL != 0:
+                if x > 16000:
+                    x = 8000
+                else:
+                    x -=4000
+    if FL == 0 and FR == 0 and RL == 0 and RR == 0:
+        Rfirst = False
+        Lfirst = False
+    
+    return x, Lfirst, Rfirst
+
+
 j = pyvjoy.VJoyDevice(1)
+
+Lfirst = False
+Rfirst = False
 
 #with tf.device('cpu:0'):
 print("preparing model..")
 model = create_model(keep_prob=1) # no dropout
 print("model created, loading weights...")
-model.load_weights('model_weights.h5')
+model.load_weights('CNN+reinforce_weights.h5')
 print(model.get_weights())
 print("weights loaded")
 sct = mss.mss()
@@ -63,7 +111,8 @@ while(True):
         ]
     print(output)
     id += 1
-    button = check_button(np.argmax(joystick[-3:]))
+    output[0], Lfirst, Rfirst = check_x(output[0], Lfirst, Rfirst)
+    button = check_button(np.argmax(joystick[-3:]), output[0])
     print(button)
     j.data.lButtons = button
     j.data.wAxisX = output[0]

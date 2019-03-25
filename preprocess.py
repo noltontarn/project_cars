@@ -16,8 +16,8 @@ def resize_image(img):
     return im_arr
 
 if __name__ == '__main__':
-        images = np.loadtxt('./input_monza3.txt', delimiter=',', dtype=str, usecols=(0,))
-        values = np.loadtxt('./input_monza3.txt', delimiter=',', usecols=(1,2,3,4,5))
+        images = np.loadtxt('./input_fixbug.txt', delimiter=',', dtype=str, usecols=(0,))
+        values = np.loadtxt('./input_fixbug.txt', delimiter=',', usecols=(1,2,3,4,5))
 
         print("Preparing data")
 
@@ -38,8 +38,8 @@ if __name__ == '__main__':
         y = np.concatenate(y)
         print(y.shape)
         print(X.shape)
-        np.save("data/X_m3", X)
-        np.save("data/y_m3", y)
+        np.save("data/X_fix", X)
+        np.save("data/y_fix", y)
         print("Done!")
         imshow(X[0])
         show()
