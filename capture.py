@@ -61,7 +61,7 @@ Button7 = 0
 start_time = time.time()
 previous_time = start_time
 sct = mss.mss()
-f = open('input_fixbug.txt', 'w')
+f = open('input_half_monza2.txt', 'w')
 id = 1
 # -------- Main Program Loop -----------
 while done==False:
@@ -153,7 +153,7 @@ while done==False:
     #if time.time() - previous_time >= (1/66):
         #previous_time = time.time()
     if start == True:
-        name = "./input_fixbug/" + str(id) + ".png"
+        name = "./input_half_monza2/" + str(id) + ".png"
         if ButtonPress == 0:
             Button0 = 1
         if ButtonPress == 6:
@@ -163,7 +163,8 @@ while done==False:
         print("{}, {}, {}, {}, {}, {}\n".format(axisX, axisY, Button0, Button6, Button7, time.time() - start_time))
         f.write("{}, {}, {}, {}, {}, {}\n".format(name, axisX, axisY, Button0, Button6, Button7))
         #image = sct.shot( output = name)
-        monitor = {"top": 272, "left": 570, "width": 800, "height": 600}
+        #monitor = {"top": 272, "left": 570, "width": 800, "height": 600}
+        monitor = {"top": 272, "left": 570, "width": 798, "height": 300}
         output = name.format(**monitor)
 
     # Grab the data
