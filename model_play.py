@@ -141,6 +141,11 @@ with keyboard.Listener(on_press=on_press) as listener:
             time.sleep(1)
             if not listener.running:
                 break
+countStuck = 0
+preDistance = 0
+
+f = open('model_play.txt', 'w')
+
 while(True):
     name = "./play/" + str(id) + ".png"
     #monitor = {"top": 272, "left": 570, "width": 800, "height": 600}
@@ -161,6 +166,7 @@ while(True):
             joystick[4],
         ]
     print(output)
+    f.write("{}\n".format(output[0]))
     id += 1
     output[0], Lfirst, Rfirst, state, count = check_x(output[0], Lfirst, Rfirst, state, count)
     button = check_button(np.argmax(joystick[-3:]), output[0])
@@ -170,5 +176,16 @@ while(True):
     j.data.wAxisY= output[1]
     #j.data.wSlider = int(TransformAxisValue(-0.8))
     #j.data.wDial = int(TransformAxisValue(-1))
+    curDistance = game.mParticipantInfo[0].mCurrentLapDistance
+    print("distance: " + str(curDistance))
+    if curDistance - preDistance < 1:
+        if countStuck == 0:
+            print("stuck")
+            j.data.lButtons = 1
+            j.data.wAxisX = 16384
+            j.data.wAxisY = 16384
+            countStuck = 10
+        countStuck -= 1
+    preDistance = curDistance
     j.update()
     os.remove(name)
