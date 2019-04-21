@@ -57,6 +57,7 @@ def check_x(x, Lfirst, Rfirst, state, count):
     RL = game.mTerrain[2]
     RR = game.mTerrain[3]
     sector = game.mParticipantInfo[0].mCurrentSector
+    dis = game.mParticipantInfo[0].mCurrentLapDistance
     print(sector)
     if sector == 0 and x > 19000:
         x -= 1000
@@ -68,12 +69,15 @@ def check_x(x, Lfirst, Rfirst, state, count):
             print("too much left")
             x += 2000
             if FR != 0:
-                state = "outL"
+                if dis > 1100:
+                    state = "outL"
                 count = 4
                 if x < 20000:
                     x = 21000
                 else:
                     x += 3500
+            if dis > 930 and dis < 1000:
+                x = 13500
     if FR != 0:
         if Lfirst == False:
             Rfirst = True 
@@ -113,6 +117,18 @@ def check_x(x, Lfirst, Rfirst, state, count):
             count -= 1
         if count == 0:
             state = "none"
+
+    if dis > 2460 and dis < 2560 and x < 16000:
+        x = 23000
+    if dis > 2600 and dis < 3000 and x > 17000:
+        if (FL != 0 and FR == 0) or state == "outL":
+            x = x
+        else:
+            x = 10000
+    if dis > 3550 and dis < 3750 and x > 17000 and FL == 0:
+        x = 10000
+    if dis > 4920 and dis < 5400 and x > 17000:
+        x -= 1500
     return x, Lfirst, Rfirst, state, count
 
 
